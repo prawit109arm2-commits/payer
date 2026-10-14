@@ -27,6 +27,8 @@
     .primary{background:var(--green);color:white}.primary:hover{background:#107b68}
     .secondary{background:#edf6f3;color:#287c6d}.danger{background:#fff0ef;color:#b96058}
     .wide{width:100%}.link-button{border:0;background:none;color:var(--green);font-weight:700;padding:8px}
+    .google-button{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:15px;border:1px solid #d9e2df;border-radius:11px;padding:10px 15px;background:#fff;color:#243b38;font-weight:700}
+    .google-button:hover{background:#f8fbfa}.google-button:disabled{opacity:.65;cursor:wait}.auth-divider{display:flex;align-items:center;gap:12px;margin-top:14px;color:#91a19e;font-size:12px}.auth-divider::before,.auth-divider::after{content:"";height:1px;background:var(--line);flex:1}
     .auth-switch{text-align:center;margin-top:14px;font-size:13px}
     .status{min-height:22px;margin-top:10px;color:#ad5b48;font-size:13px}.status.ok{color:var(--green)}
     .shell{min-height:100vh;display:grid;grid-template-columns:246px 1fr}
@@ -89,6 +91,8 @@
         <div class="field"><label for="password">รหัสผ่าน</label><input id="password" type="password" autocomplete="current-password" minlength="6" required></div>
         <button class="primary wide" id="auth-submit" type="submit">เข้าสู่ระบบ</button>
       </form>
+      <div class="auth-divider" id="auth-divider">หรือเข้าสู่ระบบด้วย</div>
+      <button class="google-button wide" id="google-signin" type="button"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.74 7.18l7.73 6C44.43 37.98 46.98 31.83 46.98 24.55z"/><path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.2A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.91-5.8l-7.73-6c-2.14 1.44-4.88 2.3-8.18 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>เข้าสู่ระบบด้วย Google</button>
       <div class="auth-switch"><span id="auth-switch-label">ยังไม่มีบัญชี?</span> <button class="link-button" id="auth-switch" type="button">สร้างบัญชี</button></div>
       <div class="status" id="auth-status" role="status" aria-live="polite"></div>
       <p class="small muted" style="margin:12px 0 0">ข้อมูลการเงินถูกแยกตามบัญชีผู้ใช้ด้วยนโยบายความปลอดภัยของฐานข้อมูล</p>
@@ -480,8 +484,26 @@
       byId('auth-switch-label').textContent = signup ? 'มีบัญชีแล้ว?' : 'ยังไม่มีบัญชี?';
       byId('auth-switch').textContent = signup ? 'เข้าสู่ระบบ' : 'สร้างบัญชี';
       byId('name-field').classList.toggle('hidden', !signup);
+      byId('google-signin').classList.toggle('hidden', signup);
+      byId('auth-divider').classList.toggle('hidden', signup);
       byId('password').autocomplete = signup ? 'new-password' : 'current-password';
       setStatus(authStatus, '', false);
+    });
+
+    byId('google-signin').addEventListener('click', async () => {
+      const button = byId('google-signin');
+      button.disabled = true;
+      setStatus(authStatus, 'กำลังเชื่อมต่อ Google...', true);
+      try {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.origin }
+        });
+        if (error) throw error;
+      } catch (error) {
+        setStatus(authStatus, error.message || 'เข้าสู่ระบบด้วย Google ไม่สำเร็จ', false);
+        button.disabled = false;
+      }
     });
 
     authForm.addEventListener('submit', async (event) => {
