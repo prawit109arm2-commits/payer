@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f9f8">
+  <title>Happy Money — จัดการเงินให้เป็นเรื่องง่าย</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#183b39;--muted:#758b88;--green:#168c75;--mint:#e5f4ef;--line:#e9efed;--paper:#fff;--bg:#f6f9f8;--orange:#f5aa54;--red:#dc7770;--shadow:0 12px 34px #224c4310}
+    *{box-sizing:border-box;font-family:'Sarabun',sans-serif}
+    body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .hidden{display:none!important}.muted{color:var(--muted)}.small{font-size:12px}
+    .auth-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 15% 10%,#e1f3ed,transparent 35%),var(--bg)}
+    .auth-card{width:min(100%,440px);padding:30px;background:white;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:20px}
+    .brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#20a88b,#087b68);display:grid;place-items:center;color:white;font-size:22px}
+    .brand small{display:block;color:#829794;font-size:10px;letter-spacing:1.5px;font-weight:700}
+    .auth-card h1{font-size:24px;margin:28px 0 4px}.auth-card p{margin:0 0 20px;color:var(--muted)}
+    .field{display:grid;gap:6px;margin:13px 0}.field label{font-size:13px;font-weight:700}
+    input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:white;color:var(--ink);outline:none}
+    input:focus,select:focus,textarea:focus{border-color:#60b9a5;box-shadow:0 0 0 3px #168c7518}
+    .primary,.secondary,.danger{border:0;border-radius:11px;padding:11px 15px;font-weight:700}
+    .primary{background:var(--green);color:white}.primary:hover{background:#107b68}
+    .secondary{background:#edf6f3;color:#287c6d}.danger{background:#fff0ef;color:#b96058}
+    .wide{width:100%}.link-button{border:0;background:none;color:var(--green);font-weight:700;padding:8px}
+    .auth-switch{text-align:center;margin-top:14px;font-size:13px}
+    .status{min-height:22px;margin-top:10px;color:#ad5b48;font-size:13px}.status.ok{color:var(--green)}
+    .shell{min-height:100vh;display:grid;grid-template-columns:246px 1fr}
+    .sidebar{background:#fff;border-right:1px solid var(--line);padding:26px 18px;display:flex;flex-direction:column;gap:28px}
+    .sidebar .brand{padding:0 8px;font-size:18px}
+    .nav-label{font-size:10px;color:#9aaca9;font-weight:800;letter-spacing:1.4px;padding:0 12px;margin-bottom:7px}
+    .nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#6b827e;text-align:left;padding:12px;border-radius:12px;display:flex;align-items:center;gap:13px;font-weight:650}
+    .nav button.active,.nav button:hover{color:var(--green);background:#eaf6f2}.ico{width:20px;text-align:center;font-size:17px}
+    .side-bottom{margin-top:auto}.tip{background:#f0f7f4;border-radius:16px;padding:15px;font-size:12px;color:#6f8581}
+    .tip strong{display:block;color:var(--ink);font-size:13px;margin-bottom:5px}
+    .profile{display:flex;align-items:center;gap:10px;padding:14px 6px 0;border-top:1px solid var(--line);margin-top:15px;min-width:0}
+    .avatar{width:34px;height:34px;border-radius:50%;background:#fce8cf;color:#966631;display:grid;place-items:center;font-weight:800;flex:none}
+    .profile-info{min-width:0;flex:1}.profile b{font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis}.profile small{display:block;color:var(--muted);font-size:11px}
+    .main{padding:25px 34px 60px;max-width:1500px;width:100%;margin:auto}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.crumb{color:#829491;font-size:12px}.crumb b{color:var(--ink)}
+    .top-actions{display:flex;gap:9px;align-items:center}.welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:20px}
+    .welcome h1{margin:0 0 4px;font-size:27px;letter-spacing:-.5px}.welcome p{margin:0;color:var(--muted);font-size:13px}
+    .add{border:0;background:var(--green);color:white;border-radius:11px;padding:11px 16px;font-weight:700;box-shadow:0 7px 16px #168c752c}.add:hover{background:#107b68}
+    .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}.card{background:var(--paper);border:1px solid #edf2f0;border-radius:18px;box-shadow:var(--shadow);padding:20px}
+    .stat{grid-column:span 4;min-height:140px}.stat .symbol{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;margin-bottom:12px;background:#eaf6f2;color:var(--green);font-size:17px}
+    .stat .value{font-size:23px;font-weight:800;margin:7px 0 2px;letter-spacing:-.4px}.stat .card-label{font-size:12px;color:#849995;font-weight:650}
+    .content-card{grid-column:span 6}.full{grid-column:span 12}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+    .card-head h2{font-size:15px;margin:0}.subtle{font-size:11px;color:var(--muted)}
+    .tx-list{display:grid}.tx{display:grid;grid-template-columns:38px 1fr auto auto;align-items:center;gap:11px;padding:12px 0;border-top:1px solid #f0f3f2}
+    .tx-icon{width:36px;height:36px;border-radius:12px;background:#f4f7f6;display:grid;place-items:center}.tx b{font-size:12px}.tx small{display:block;color:#93a29f;font-size:10px}
+    .amount{font-weight:750;font-size:12px;white-space:nowrap}.amount.plus{color:#168c75}.amount.minus{color:#df8078}
+    .tx-date{color:#94a39f;font-size:10px;min-width:40px;text-align:right}.empty{padding:27px;text-align:center;color:var(--muted);font-size:13px}
+    .notice{display:flex;align-items:center;justify-content:space-between;gap:14px;background:#eff8f5;border:1px solid #d7eee6;border-radius:15px;padding:15px 17px;margin:0 0 18px}
+    .notice strong{display:block}.notice p{margin:3px 0 0;color:var(--muted);font-size:12px}
+    .account-card{grid-column:span 4}.account-head{display:flex;align-items:center;gap:12px}.account-icon{height:40px;width:40px;display:grid;place-items:center;background:#eaf6f2;color:var(--green);border-radius:12px}
+    .account-head strong{display:block}.account-balance{font-size:21px;font-weight:800;margin:17px 0 1px}
+    .list-row{padding:14px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+    .progress{height:8px;border-radius:20px;background:#edf3f1;overflow:hidden}.progress span{display:block;height:100%;border-radius:20px;background:var(--green);width:0}
+    .progress.orange span{background:var(--orange)}
+    .goal-title{font-weight:700}.goal-meta{font-size:11px;color:var(--muted)}
+    .chart{height:170px;display:flex;align-items:flex-end;gap:12px;padding:8px 5px 0;border-bottom:1px solid var(--line);background:repeating-linear-gradient(to bottom,transparent 0 40px,#f1f5f4 41px)}
+    .chart-month{flex:1;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px;position:relative}
+    .chart-bar{width:min(18px,40%);min-height:2px;border-radius:5px 5px 0 0;background:#35ad90}.chart-bar.expense{background:#f4bf78}
+    .chart-labels{display:flex;justify-content:space-around;color:#91a19e;font-size:10px;padding-top:8px}
+    .view{display:none}.view.active{display:block}
+    dialog{border:0;border-radius:19px;padding:0;width:min(100% - 28px,460px);box-shadow:0 24px 80px #12332b40}
+    dialog::backdrop{background:#12332b66;backdrop-filter:blur(2px)}.form{padding:24px}.form h2{margin:0 0 17px;font-size:20px}
+    .form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:19px}
+    .type-toggle{display:flex;gap:8px;margin:0 0 12px}.type-toggle button{flex:1;border:1px solid var(--line);border-radius:10px;background:#fff;padding:9px;color:var(--muted);font-weight:700}
+    .type-toggle button.selected{background:#eaf6f2;color:var(--green);border-color:#bfe4d9}
+    .mobile-menu{display:none}
+    @media(max-width:980px){.shell{grid-template-columns:205px 1fr}.main{padding:22px}.content-card{grid-column:span 12}.account-card{grid-column:span 6}}
+    @media(max-width:700px){.shell{display:block}.sidebar{padding:13px 15px;position:sticky;top:0;z-index:5;border-right:0;border-bottom:1px solid var(--line);gap:10px}.sidebar .brand{padding:0}.sidebar .brand-mark{width:35px;height:35px}.nav-label,.tip,.profile{display:none}.nav{display:flex;overflow:auto;gap:4px}.nav button{white-space:nowrap;padding:9px 11px;font-size:12px}.side-bottom{display:none}.main{padding:20px 15px 42px}.topbar{margin-bottom:18px}.welcome h1{font-size:23px}.welcome{align-items:flex-start}.stat{grid-column:span 12;min-height:unset}.stat .symbol{margin-bottom:8px}.account-card{grid-column:span 12}.tx{grid-template-columns:35px 1fr auto;gap:8px}.tx-date{display:none}.notice{align-items:flex-start;flex-direction:column}.top-actions .secondary{padding:8px 10px}}
+  </style>
+</head>
+<body>
+  <section id="auth-panel" class="auth-wrap">
+    <div class="auth-card">
+      <div class="brand"><span class="brand-mark">฿</span><span>Happy Money<small>PERSONAL FINANCE</small></span></div>
+      <h1 id="auth-title">เข้าสู่ระบบ</h1>
+      <p id="auth-description">บันทึกรายรับรายจ่ายและดูภาพรวมการเงินของคุณ</p>
+      <form id="auth-form">
+        <div class="field hidden" id="name-field"><label for="display-name">ชื่อที่ใช้แสดง</label><input id="display-name" autocomplete="name" maxlength="80"></div>
+        <div class="field"><label for="email">อีเมล</label><input id="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="password">รหัสผ่าน</label><input id="password" type="password" autocomplete="current-password" minlength="6" required></div>
+        <button class="primary wide" id="auth-submit" type="submit">เข้าสู่ระบบ</button>
+      </form>
+      <div class="auth-switch"><span id="auth-switch-label">ยังไม่มีบัญชี?</span> <button class="link-button" id="auth-switch" type="button">สร้างบัญชี</button></div>
+      <div class="status" id="auth-status" role="status" aria-live="polite"></div>
+      <p class="small muted" style="margin:12px 0 0">ข้อมูลการเงินถูกแยกตามบัญชีผู้ใช้ด้วยนโยบายความปลอดภัยของฐานข้อมูล</p>
+    </div>
+  </section>
+
+  <div id="app" class="shell hidden">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">฿</span><span>Happy Money<small>PERSONAL FINANCE</small></span></div>
+      <div>
+        <div class="nav-label">เมนูหลัก</div>
+        <nav class="nav" id="nav">
+          <button class="active" data-view="overview"><span class="ico">⌂</span>ภาพรวม</button>
+          <button data-view="transactions"><span class="ico">⇄</span>รายการรับจ่าย</button>
+          <button data-view="accounts"><span class="ico">▣</span>บัญชี</button>
+          <button data-view="budgets"><span class="ico">◷</span>งบประมาณ</button>
+          <button data-view="goals"><span class="ico">✦</span>เป้าหมายออม</button>
+        </nav>
+      </div>
+      <div class="side-bottom">
+        <div class="tip"><strong>เริ่มต้นใช้งาน</strong>ข้อมูลของคุณบันทึกบน Supabase และแสดงเฉพาะเมื่อเข้าสู่ระบบ</div>
+        <div class="profile"><div class="avatar" id="avatar">P</div><div class="profile-info"><b id="profile-email">ผู้ใช้</b><small>บัญชีส่วนตัว</small></div><button class="link-button" id="sign-out" type="button">ออก</button></div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div class="crumb">Happy Money <b>› <span id="crumb">ภาพรวม</span></b></div><div class="top-actions"><span id="user-email" class="subtle"></span><button class="secondary" id="refresh" type="button">↻ รีเฟรช</button><button class="secondary" id="mobile-sign-out" type="button">ออกจากระบบ</button></div></div>
+      <div id="app-status" class="status" role="status" aria-live="polite"></div>
+      <section class="notice hidden" id="first-account-notice">
+        <div><strong>เริ่มต้นด้วยการเพิ่มบัญชีแรก</strong><p>เช่น เงินสด บัญชีธนาคาร หรือบัตรเครดิต เพื่อใช้ผูกกับรายการรับจ่าย</p></div>
+        <button class="primary" data-open="account-dialog" type="button">＋ เพิ่มบัญชี</button>
+      </section>
+
+      <section class="view active" id="overview">
+        <div class="welcome"><div><h1>ภาพรวมการเงิน</h1><p>สรุปรายรับ รายจ่าย และยอดคงเหลือของเดือนนี้</p></div><button class="add" data-open="transaction-dialog" type="button">＋ เพิ่มรายการ</button></div>
+        <div class="grid">
+          <article class="card stat"><div class="symbol">◈</div><div class="card-label">ยอดบัญชีสุทธิ</div><div class="value" id="total-balance">฿0.00</div><div class="subtle">คำนวณจากยอดตั้งต้นและรายการที่บันทึก</div></article>
+          <article class="card stat"><div class="symbol">↗</div><div class="card-label">รายรับเดือนนี้</div><div class="value" id="month-income">฿0.00</div><div class="subtle">จากรายการที่บันทึกในเดือนปัจจุบัน</div></article>
+          <article class="card stat"><div class="symbol">↘</div><div class="card-label">รายจ่ายเดือนนี้</div><div class="value" id="month-expense">฿0.00</div><div class="subtle">จากรายการที่บันทึกในเดือนปัจจุบัน</div></article>
+          <article class="card content-card"><div class="card-head"><div><h2>รายการล่าสุด</h2><span class="subtle">ข้อมูลจากบัญชีของคุณ</span></div><button class="link-button" data-jump="transactions" type="button">ดูทั้งหมด →</button></div><div class="tx-list" id="recent-transactions"></div></article>
+          <article class="card content-card"><div class="card-head"><div><h2>งบประมาณเดือนนี้</h2><span class="subtle" id="month-label"></span></div><button class="link-button" data-jump="budgets" type="button">จัดการ →</button></div><div id="budget-glance"></div></article>
+          <article class="card content-card"><div class="card-head"><div><h2>เป้าหมายการออม</h2><span class="subtle">ความคืบหน้าล่าสุด</span></div><button class="link-button" data-jump="goals" type="button">ดูทั้งหมด →</button></div><div id="goal-glance"></div></article>
+          <article class="card content-card"><div class="card-head"><div><h2>รายรับและรายจ่าย</h2><span class="subtle">6 เดือนล่าสุด</span></div></div><div class="chart" id="monthly-chart"></div><div class="chart-labels" id="monthly-labels"></div></article>
+        </div>
+      </section>
+
+      <section class="view" id="transactions">
+        <div class="welcome"><div><h1>รายการรับจ่าย</h1><p>รายการทั้งหมดของบัญชีที่เข้าสู่ระบบ</p></div><button class="add" data-open="transaction-dialog" type="button">＋ เพิ่มรายการ</button></div>
+        <article class="card"><div class="card-head"><h2>รายการของฉัน</h2><span id="transaction-count" class="subtle">0 รายการ</span></div><div class="tx-list" id="all-transactions"></div></article>
+      </section>
+
+      <section class="view" id="accounts">
+        <div class="welcome"><div><h1>บัญชีของฉัน</h1><p>เงินสด ธนาคาร และบัญชีการเงินที่ติดตาม</p></div><button class="add" data-open="account-dialog" type="button">＋ เพิ่มบัญชี</button></div>
+        <div class="grid" id="account-list"></div>
+      </section>
+
+      <section class="view" id="budgets">
+        <div class="welcome"><div><h1>งบประมาณ</h1><p>กำหนดวงเงินรายเดือนแยกตามหมวดหมู่</p></div><button class="add" data-open="budget-dialog" type="button">＋ ตั้งงบประมาณ</button></div>
+        <div class="grid" id="budget-list"></div>
+      </section>
+
+      <section class="view" id="goals">
+        <div class="welcome"><div><h1>เป้าหมายการออม</h1><p>ติดตามยอดออมเทียบกับเป้าหมาย</p></div><button class="add" data-open="goal-dialog" type="button">＋ สร้างเป้าหมาย</button></div>
+        <div class="grid" id="goal-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="account-dialog"><form class="form" id="account-form"><h2>เพิ่มบัญชี</h2>
+    <div class="field"><label for="account-name">ชื่อบัญชี</label><input id="account-name" placeholder="เช่น เงินสด, ธนาคาร..." required maxlength="80"></div>
+    <div class="field"><label for="account-type">ประเภทบัญชี</label><select id="account-type"><option value="cash">เงินสด</option><option value="bank" selected>บัญชีธนาคาร</option><option value="credit_card">บัตรเครดิต</option><option value="investment">การลงทุน</option><option value="other">อื่น ๆ</option></select></div>
+    <div class="field"><label for="opening-balance">ยอดตั้งต้น (บาท)</label><input id="opening-balance" type="number" step="0.01" value="0"></div>
+    <div class="form-actions"><button class="secondary" type="button" data-close="account-dialog">ยกเลิก</button><button class="primary" type="submit">บันทึกบัญชี</button></div>
+  </form></dialog>
+
+  <dialog id="transaction-dialog"><form class="form" id="transaction-form"><h2>เพิ่มรายการ</h2>
+    <div class="type-toggle"><button type="button" class="selected" data-kind="expense">รายจ่าย</button><button type="button" data-kind="income">รายรับ</button></div>
+    <input type="hidden" id="transaction-type" value="expense">
+    <div class="field"><label for="transaction-title">ชื่อรายการ</label><input id="transaction-title" placeholder="เช่น ค่าอาหารกลางวัน" required maxlength="120"></div>
+    <div class="field"><label for="transaction-amount">จำนวนเงิน (บาท)</label><input id="transaction-amount" type="number" min="0.01" step="0.01" placeholder="0.00" required></div>
+    <div class="field"><label for="transaction-category">หมวดหมู่</label><select id="transaction-category"><option>อาหารและเครื่องดื่ม</option><option>เดินทาง</option><option>ช้อปปิ้ง</option><option>บ้านและบิล</option><option>เงินเดือน</option><option>สุขภาพ</option><option>บันเทิง</option><option>อื่น ๆ</option></select></div>
+    <div class="field"><label for="transaction-account">บัญชี</label><select id="transaction-account" required></select></div>
+    <div class="field"><label for="transaction-date">วันที่และเวลา</label><input id="transaction-date" type="datetime-local" required></div>
+    <div class="field"><label for="transaction-note">บันทึกเพิ่มเติม (ไม่บังคับ)</label><input id="transaction-note" maxlength="240"></div>
+    <div class="form-actions"><button class="secondary" type="button" data-close="transaction-dialog">ยกเลิก</button><button class="primary" type="submit">บันทึกรายการ</button></div>
+  </form></dialog>
+
+  <dialog id="budget-dialog"><form class="form" id="budget-form"><h2>ตั้งงบประมาณ</h2>
+    <div class="field"><label for="budget-category">หมวดหมู่</label><select id="budget-category"><option>อาหารและเครื่องดื่ม</option><option>เดินทาง</option><option>ช้อปปิ้ง</option><option>บ้านและบิล</option><option>สุขภาพ</option><option>บันเทิง</option><option>อื่น ๆ</option></select></div>
+    <div class="field"><label for="budget-amount">งบประมาณ (บาท)</label><input id="budget-amount" type="number" min="0.01" step="0.01" required></div>
+    <div class="field"><label for="budget-month">เดือน</label><input id="budget-month" type="month" required></div>
+    <div class="form-actions"><button class="secondary" type="button" data-close="budget-dialog">ยกเลิก</button><button class="primary" type="submit">บันทึกงบประมาณ</button></div>
+  </form></dialog>
+
+  <dialog id="goal-dialog"><form class="form" id="goal-form"><h2>สร้างเป้าหมายออม</h2>
+    <div class="field"><label for="goal-title">ชื่อเป้าหมาย</label><input id="goal-title" placeholder="เช่น เงินสำรองฉุกเฉิน" required maxlength="100"></div>
+    <div class="field"><label for="goal-target">ยอดเป้าหมาย (บาท)</label><input id="goal-target" type="number" min="0.01" step="0.01" required></div>
+    <div class="field"><label for="goal-current">ออมแล้ว (บาท)</label><input id="goal-current" type="number" min="0" step="0.01" value="0" required></div>
+    <div class="field"><label for="goal-date">วันที่ต้องการ (ไม่บังคับ)</label><input id="goal-date" type="date"></div>
+    <div class="form-actions"><button class="secondary" type="button" data-close="goal-dialog">ยกเลิก</button><button class="primary" type="submit">บันทึกเป้าหมาย</button></div>
+  </form></dialog>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const SUPABASE_URL = 'https://ikdliwreyvkhvyyahgzp.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_66f4g3VIOGnmA48lYOOwQw_auwoJQg6';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
+
+    const byId = (id) => document.getElementById(id);
+    const authPanel = byId('auth-panel');
+    const app = byId('app');
+    const authForm = byId('auth-form');
+    const authStatus = byId('auth-status');
+    const appStatus = byId('app-status');
+    const iconFor = (category) => ({
+      'อาหารและเครื่องดื่ม': '🍜', 'เดินทาง': '🚆', 'ช้อปปิ้ง': '🛍️',
+      'บ้านและบิล': '🏠', 'เงินเดือน': '💼', 'สุขภาพ': '✚', 'บันเทิง': '♫', 'อื่น ๆ': '✦'
+    })[category] || '✦';
+
+    let authMode = 'signin';
+    let currentUser = null;
+    let accounts = [];
+    let transactions = [];
+    let budgets = [];
+    let goals = [];
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+    }
+
+    function money(value) {
+      return '฿' + Number(value || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function setStatus(element, message, success) {
+      element.textContent = message || '';
+      element.classList.toggle('ok', Boolean(success));
+    }
+
+    function monthStart(date) {
+      return new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+
+    function localMonthKey(date) {
+      return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      return date.toLocaleString('th-TH', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function showView(id) {
+      document.querySelectorAll('.view').forEach((view) => view.classList.toggle('active', view.id === id));
+      document.querySelectorAll('#nav button').forEach((button) => button.classList.toggle('active', button.dataset.view === id));
+      const active = document.querySelector('#nav [data-view="' + id + '"]');
+      byId('crumb').textContent = active ? active.textContent.trim() : 'ภาพรวม';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showSignedOut() {
+      currentUser = null;
+      accounts = [];
+      transactions = [];
+      budgets = [];
+      goals = [];
+      authPanel.classList.remove('hidden');
+      app.classList.add('hidden');
+      setStatus(appStatus, '', false);
+    }
+
+    function showSignedIn(user) {
+      if (currentUser?.id === user.id && !app.classList.contains('hidden')) return;
+      currentUser = user;
+      authPanel.classList.add('hidden');
+      app.classList.remove('hidden');
+      byId('user-email').textContent = user.email || '';
+      byId('profile-email').textContent = user.email || 'บัญชีของฉัน';
+      byId('avatar').textContent = (user.email || 'P').slice(0, 1).toUpperCase();
+      setStatus(authStatus, '', false);
+      loadData();
+    }
+
+    async function loadData() {
+      if (!currentUser) return;
+      setStatus(appStatus, 'กำลังโหลดข้อมูล...', true);
+      const userId = currentUser.id;
+      let results;
+      try {
+        results = await Promise.all([
+          supabase.from('profiles').select('id, display_name').eq('id', userId).maybeSingle(),
+          supabase.from('accounts').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
+          supabase.from('transactions').select('*').eq('user_id', userId).order('occurred_at', { ascending: false }),
+          supabase.from('budgets').select('*').eq('user_id', userId).order('period_start', { ascending: false }),
+          supabase.from('savings_goals').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+        ]);
+      } catch (error) {
+        setStatus(appStatus, 'เชื่อมต่อฐานข้อมูลไม่สำเร็จ: ' + (error.message || 'ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่'), false);
+        return;
+      }
+
+      const errors = results.map((result) => result.error).filter(Boolean);
+      if (errors.length) {
+        setStatus(appStatus, 'โหลดข้อมูลไม่สำเร็จ: ' + errors[0].message, false);
+        return;
+      }
+
+      const profile = results[0].data;
+      if (!profile) {
+        const profileResult = await supabase.from('profiles').upsert({
+          id: userId,
+          display_name: currentUser.user_metadata?.display_name || null
+        }, { onConflict: 'id', ignoreDuplicates: true });
+        if (profileResult.error) {
+          setStatus(appStatus, 'สร้างโปรไฟล์ไม่สำเร็จ: ' + profileResult.error.message, false);
+          return;
+        }
+      }
+
+      accounts = results[1].data || [];
+      transactions = results[2].data || [];
+      budgets = results[3].data || [];
+      goals = results[4].data || [];
+      render();
+      setStatus(appStatus, '', false);
+    }
+
+    function transactionMarkup(item) {
+      const amount = Number(item.amount);
+      const positive = item.transaction_type === 'income';
+      const account = accounts.find((entry) => entry.id === item.account_id);
+      return '<div class="tx"><div class="tx-icon">' + iconFor(item.category) + '</div>' +
+        '<div><b>' + escapeHtml(item.title) + '</b><small>' + escapeHtml(item.category) +
+        ' · ' + escapeHtml(account?.name || 'บัญชี') + (item.note ? ' · ' + escapeHtml(item.note) : '') +
+        '</small></div><span class="amount ' + (positive ? 'plus' : 'minus') + '">' +
+        (positive ? '+' : '−') + ' ' + money(amount) + '</span><span class="tx-date">' +
+        escapeHtml(formatDate(item.occurred_at)) + '</span></div>';
+    }
+
+    function renderTransactions() {
+      const latest = transactions.slice(0, 6).map(transactionMarkup).join('');
+      const all = transactions.map(transactionMarkup).join('');
+      byId('recent-transactions').innerHTML = latest || '<div class="empty">ยังไม่มีรายการ เริ่มบันทึกรายการแรกของคุณได้เลย</div>';
+      byId('all-transactions').innerHTML = all || '<div class="empty">ยังไม่มีรายการในบัญชีนี้</div>';
+      byId('transaction-count').textContent = transactions.length.toLocaleString('th-TH') + ' รายการ';
+    }
+
+    function accountBalance(account) {
+      return transactions.reduce((balance, item) => {
+        if (item.account_id !== account.id) return balance;
+        return balance + (item.transaction_type === 'income' ? 1 : -1) * Number(item.amount);
+      }, Number(account.opening_balance || 0));
+    }
+
+    function renderAccounts() {
+      const typeLabels = { cash: 'เงินสด', bank: 'ธนาคาร', credit_card: 'บัตรเครดิต', investment: 'ลงทุน', other: 'อื่น ๆ' };
+      byId('account-list').innerHTML = accounts.map((account) => {
+        const balance = accountBalance(account);
+        const icon = account.account_type === 'cash' ? '◉' : account.account_type === 'credit_card' ? '▤' : account.account_type === 'investment' ? '◈' : '▣';
+        return '<article class="card account-card"><div class="account-head"><div class="account-icon">' + icon + '</div><div><strong>' +
+          escapeHtml(account.name) + '</strong><span class="subtle">' + escapeHtml(typeLabels[account.account_type] || 'บัญชี') +
+          '</span></div></div><div class="account-balance">' + money(balance) + '</div><div class="subtle">ยอดตั้งต้น ' + money(account.opening_balance) +
+          ' · ' + escapeHtml(account.currency) + '</div></article>';
+      }).join('') || '<article class="card full"><div class="empty">ยังไม่มีบัญชี เพิ่มบัญชีเพื่อเริ่มบันทึกรายการ</div></article>';
+
+      const accountSelect = byId('transaction-account');
+      accountSelect.innerHTML = accounts.map((account) => '<option value="' + escapeHtml(account.id) + '">' + escapeHtml(account.name) + '</option>').join('');
+      byId('first-account-notice').classList.toggle('hidden', accounts.length > 0);
+    }
+
+    function monthTransactions(date) {
+      const start = monthStart(date);
+      const end = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+      return transactions.filter((item) => {
+        const occurred = new Date(item.occurred_at);
+        return occurred >= start && occurred < end;
+      });
+    }
+
+    function renderBudgets() {
+      const now = new Date();
+      const currentMonth = localMonthKey(now);
+      const currentBudgets = budgets.filter((budget) => String(budget.period_start).slice(0, 7) === currentMonth);
+      const expenses = monthTransactions(now).filter((item) => item.transaction_type === 'expense');
+      const entries = currentBudgets.map((budget) => {
+        const spent = expenses.filter((item) => item.category === budget.category).reduce((sum, item) => sum + Number(item.amount), 0);
+        const pct = Math.min(100, Math.round((spent / Number(budget.amount)) * 100));
+        return '<div class="list-row"><div><div class="goal-title">' + escapeHtml(budget.category) + '</div><div class="goal-meta">' +
+          money(spent) + ' จาก ' + money(budget.amount) + '</div><div class="progress" style="margin-top:8px"><span style="width:' + pct + '%"></span></div></div><b>' +
+          pct + '%</b></div>';
+      }).join('');
+      byId('budget-glance').innerHTML = entries || '<div class="empty">ยังไม่มีงบประมาณเดือนนี้</div>';
+      byId('budget-list').innerHTML = currentBudgets.map((budget) => {
+        const spent = expenses.filter((item) => item.category === budget.category).reduce((sum, item) => sum + Number(item.amount), 0);
+        const pct = Math.min(100, Math.round((spent / Number(budget.amount)) * 100));
+        return '<article class="card content-card"><div class="card-head"><h2>' + escapeHtml(budget.category) + '</h2><b>' + pct + '%</b></div><div class="subtle">' +
+          money(spent) + ' / ' + money(budget.amount) + '</div><div class="progress" style="margin-top:10px"><span style="width:' + pct + '%"></span></div><div class="subtle" style="margin-top:8px">เหลือ ' +
+          money(Math.max(0, Number(budget.amount) - spent)) + '</div></article>';
+      }).join('') || '<article class="card full"><div class="empty">ยังไม่มีงบประมาณสำหรับเดือนนี้</div></article>';
+    }
+
+    function renderGoals() {
+      const renderGoal = (goal) => {
+        const pct = Math.min(100, Math.round((Number(goal.current_amount) / Number(goal.target_amount)) * 100));
+        const dateText = goal.target_date ? ' · เป้าหมาย ' + new Date(goal.target_date + 'T00:00:00').toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+        return '<div class="list-row"><div><div class="goal-title">' + escapeHtml(goal.title) + '</div><div class="goal-meta">' +
+          money(goal.current_amount) + ' / ' + money(goal.target_amount) + escapeHtml(dateText) + '</div><div class="progress orange" style="margin-top:8px"><span style="width:' + pct + '%"></span></div></div><b>' + pct + '%</b></div>';
+      };
+      byId('goal-glance').innerHTML = goals.slice(0, 3).map(renderGoal).join('') || '<div class="empty">ยังไม่มีเป้าหมายการออม</div>';
+      byId('goal-list').innerHTML = goals.map((goal) => '<article class="card content-card">' + renderGoal(goal) + '</article>').join('') ||
+        '<article class="card full"><div class="empty">สร้างเป้าหมายแรกของคุณได้เลย</div></article>';
+    }
+
+    function renderChart() {
+      const now = new Date();
+      const months = [];
+      for (let offset = 5; offset >= 0; offset -= 1) {
+        const date = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+        const key = localMonthKey(date);
+        const records = transactions.filter((item) => localMonthKey(new Date(item.occurred_at)) === key);
+        months.push({
+          label: date.toLocaleDateString('th-TH', { month: 'short' }),
+          income: records.filter((item) => item.transaction_type === 'income').reduce((sum, item) => sum + Number(item.amount), 0),
+          expense: records.filter((item) => item.transaction_type === 'expense').reduce((sum, item) => sum + Number(item.amount), 0)
+        });
+      }
+      const maximum = Math.max(1, ...months.flatMap((item) => [item.income, item.expense]));
+      byId('monthly-chart').innerHTML = months.map((item) =>
+        '<div class="chart-month" title="' + escapeHtml(item.label + ': รับ ' + money(item.income) + ', จ่าย ' + money(item.expense)) + '">' +
+        '<i class="chart-bar" style="height:' + Math.max(2, item.income / maximum * 95) + '%"></i>' +
+        '<i class="chart-bar expense" style="height:' + Math.max(2, item.expense / maximum * 95) + '%"></i></div>'
+      ).join('');
+      byId('monthly-labels').innerHTML = months.map((item) => '<span>' + escapeHtml(item.label) + '</span>').join('');
+    }
+
+    function render() {
+      const now = new Date();
+      const currentRecords = monthTransactions(now);
+      const income = currentRecords.filter((item) => item.transaction_type === 'income').reduce((sum, item) => sum + Number(item.amount), 0);
+      const expense = currentRecords.filter((item) => item.transaction_type === 'expense').reduce((sum, item) => sum + Number(item.amount), 0);
+      const balance = accounts.reduce((sum, account) => sum + accountBalance(account), 0);
+      byId('total-balance').textContent = money(balance);
+      byId('month-income').textContent = money(income);
+      byId('month-expense').textContent = money(expense);
+      byId('month-label').textContent = now.toLocaleDateString('th-TH', { month: 'long', year: 'numeric' });
+      renderTransactions();
+      renderAccounts();
+      renderBudgets();
+      renderGoals();
+      renderChart();
+    }
+
+    function openDialog(id) {
+      if (id === 'transaction-dialog' && accounts.length === 0) {
+        setStatus(appStatus, 'เพิ่มบัญชีก่อน แล้วจึงบันทึกรายการรับจ่ายได้', false);
+        byId('account-dialog').showModal();
+        return;
+      }
+      if (id === 'transaction-dialog') {
+        const now = new Date();
+        const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        byId('transaction-date').value = local;
+      }
+      if (id === 'budget-dialog') byId('budget-month').value = localMonthKey(new Date());
+      if (id === 'goal-dialog') byId('goal-current').value = '0';
+      byId(id).showModal();
+    }
+
+    document.querySelectorAll('#nav button').forEach((button) => button.addEventListener('click', () => showView(button.dataset.view)));
+    document.querySelectorAll('[data-jump]').forEach((button) => button.addEventListener('click', () => showView(button.dataset.jump)));
+    document.querySelectorAll('[data-open]').forEach((button) => button.addEventListener('click', () => openDialog(button.dataset.open)));
+    document.querySelectorAll('[data-close]').forEach((button) => button.addEventListener('click', () => byId(button.dataset.close).close()));
+    document.querySelectorAll('.type-toggle button').forEach((button) => button.addEventListener('click', () => {
+      document.querySelectorAll('.type-toggle button').forEach((choice) => choice.classList.toggle('selected', choice === button));
+      byId('transaction-type').value = button.dataset.kind;
+    }));
+    byId('refresh').addEventListener('click', loadData);
+
+    byId('auth-switch').addEventListener('click', () => {
+      authMode = authMode === 'signin' ? 'signup' : 'signin';
+      const signup = authMode === 'signup';
+      byId('auth-title').textContent = signup ? 'สร้างบัญชีใหม่' : 'เข้าสู่ระบบ';
+      byId('auth-description').textContent = signup ? 'เริ่มบันทึกข้อมูลการเงินส่วนตัวของคุณ' : 'บันทึกรายรับรายจ่ายและดูภาพรวมการเงินของคุณ';
+      byId('auth-submit').textContent = signup ? 'สร้างบัญชี' : 'เข้าสู่ระบบ';
+      byId('auth-switch-label').textContent = signup ? 'มีบัญชีแล้ว?' : 'ยังไม่มีบัญชี?';
+      byId('auth-switch').textContent = signup ? 'เข้าสู่ระบบ' : 'สร้างบัญชี';
+      byId('name-field').classList.toggle('hidden', !signup);
+      byId('password').autocomplete = signup ? 'new-password' : 'current-password';
+      setStatus(authStatus, '', false);
+    });
+
+    authForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = byId('email').value.trim();
+      const password = byId('password').value;
+      setStatus(authStatus, 'กำลังดำเนินการ...', true);
+      byId('auth-submit').disabled = true;
+      try {
+        if (authMode === 'signup') {
+          const displayName = byId('display-name').value.trim();
+          const options = { data: { display_name: displayName || null } };
+          if (window.location.protocol === 'https:' || window.location.protocol === 'http:') {
+            options.emailRedirectTo = window.location.origin;
+          }
+          const { data, error } = await supabase.auth.signUp({ email, password, options });
+          if (error) throw error;
+          if (data.session) {
+            await showSignedIn(data.user);
+          } else {
+            setStatus(authStatus, 'สร้างบัญชีแล้ว กรุณาตรวจอีเมลเพื่อยืนยัน ก่อนเข้าสู่ระบบ', true);
+          }
+        } else {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          await showSignedIn(data.user);
+        }
+      } catch (error) {
+        setStatus(authStatus, error.message || 'เข้าสู่ระบบไม่สำเร็จ', false);
+      } finally {
+        byId('auth-submit').disabled = false;
+      }
+    });
+
+    async function signOut() {
+      const { error } = await supabase.auth.signOut();
+      if (error) setStatus(appStatus, error.message, false);
+      else showSignedOut();
+    }
+    byId('sign-out').addEventListener('click', signOut);
+    byId('mobile-sign-out').addEventListener('click', signOut);
+
+    byId('account-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!currentUser) return;
+      const { error } = await supabase.from('accounts').insert({
+        user_id: currentUser.id,
+        name: byId('account-name').value.trim(),
+        account_type: byId('account-type').value,
+        currency: 'THB',
+        opening_balance: Number(byId('opening-balance').value || 0)
+      });
+      if (error) { setStatus(appStatus, 'บันทึกบัญชีไม่สำเร็จ: ' + error.message, false); return; }
+      byId('account-dialog').close();
+      byId('account-form').reset();
+      await loadData();
+    });
+
+    byId('transaction-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!currentUser) return;
+      const payload = {
+        user_id: currentUser.id,
+        account_id: byId('transaction-account').value,
+        transaction_type: byId('transaction-type').value,
+        amount: Number(byId('transaction-amount').value),
+        category: byId('transaction-category').value,
+        title: byId('transaction-title').value.trim(),
+        note: byId('transaction-note').value.trim() || null,
+        occurred_at: new Date(byId('transaction-date').value).toISOString()
+      };
+      const { error } = await supabase.from('transactions').insert(payload);
+      if (error) { setStatus(appStatus, 'บันทึกรายการไม่สำเร็จ: ' + error.message, false); return; }
+      byId('transaction-dialog').close();
+      byId('transaction-form').reset();
+      byId('transaction-type').value = 'expense';
+      document.querySelectorAll('.type-toggle button').forEach((button, index) => button.classList.toggle('selected', index === 0));
+      await loadData();
+    });
+
+    byId('budget-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!currentUser) return;
+      const month = byId('budget-month').value;
+      const payload = {
+        user_id: currentUser.id,
+        category: byId('budget-category').value,
+        period_start: month + '-01',
+        amount: Number(byId('budget-amount').value)
+      };
+      const { error } = await supabase.from('budgets').upsert(payload, { onConflict: 'user_id,category,period_start' });
+      if (error) { setStatus(appStatus, 'บันทึกงบประมาณไม่สำเร็จ: ' + error.message, false); return; }
+      byId('budget-dialog').close();
+      byId('budget-form').reset();
+      await loadData();
+    });
+
+    byId('goal-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!currentUser) return;
+      const target = Number(byId('goal-target').value);
+      const current = Number(byId('goal-current').value || 0);
+      if (current > target) { setStatus(appStatus, 'ยอดออมแล้วต้องไม่เกินยอดเป้าหมาย', false); return; }
+      const payload = {
+        user_id: currentUser.id,
+        title: byId('goal-title').value.trim(),
+        target_amount: target,
+        current_amount: current,
+        target_date: byId('goal-date').value || null
+      };
+      const { error } = await supabase.from('savings_goals').insert(payload);
+      if (error) { setStatus(appStatus, 'บันทึกเป้าหมายไม่สำเร็จ: ' + error.message, false); return; }
+      byId('goal-dialog').close();
+      byId('goal-form').reset();
+      await loadData();
+    });
+
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) setStatus(authStatus, 'ตรวจสอบเซสชันไม่สำเร็จ: ' + sessionError.message, false);
+    if (sessionData?.session?.user) showSignedIn(sessionData.session.user);
+    else showSignedOut();
+
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session?.user) showSignedOut();
+      else if (currentUser?.id !== session.user.id) showSignedIn(session.user);
+    });
+  </script>
+</body>
+</html>
+
+
